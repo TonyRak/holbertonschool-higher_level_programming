@@ -12,23 +12,48 @@ def matrix_divided(matrix, div):
     """
     mes0 = "matrix must be a matrix (list of lists) of integers/floats"
     mes1 = "Each row of the matrix must have the same size"
-    res_matrix = []
 
-    if not isinstance(div, (int, float)):
+    # Check if div is a number (but not bool, since bool is a subclass of int)
+    if isinstance(div, bool) or not isinstance(div, (int, float)):
         raise TypeError("div must be a number")
 
     if div == 0:
         raise ZeroDivisionError("division by zero")
 
+    # Check if matrix is a list
+    if not isinstance(matrix, list):
+        raise TypeError(mes0)
+
+    # Check if matrix is empty
+    if len(matrix) == 0:
+        raise TypeError(mes0)
+
+    res_matrix = []
+    first_row_len = None
+
     for lists in matrix:
-        if len(lists) != len(matrix[0]):
+        # Check if each element is a list (not tuple or other)
+        if not isinstance(lists, list):
+            raise TypeError(mes0)
+
+        # Check if row is empty
+        if len(lists) == 0:
+            raise TypeError(mes0)
+
+        # Set the first row length as reference
+        if first_row_len is None:
+            first_row_len = len(lists)
+
+        # Check if each row has the same size
+        if len(lists) != first_row_len:
             raise TypeError(mes1)
+
         inner_list = []
         for items in lists:
-            if not isinstance(items, (int, float)):
+            # Check if item is a number (but not bool)
+            if isinstance(items, bool) or not isinstance(items, (int, float)):
                 raise TypeError(mes0)
-            else:
-                inner_list.append(round(items / div, 2))
+            inner_list.append(round(items / div, 2))
         res_matrix.append(inner_list)
 
     return res_matrix
